@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Text>Command ShakeAreaBoundary</Text>
+    <Description>Some description for ShakeAreaBoundary</Description>
+    <Assembly>ShakeAreaBoundary.dll</Assembly>
+    <FullClassName>ShakeAreaBoundary.Command</FullClassName>
+    <ClientId>68de3032-5fbd-4f3b-bb33-2ad1ec96ad2f</ClientId>
+    <VendorId>com.YOUR COMPANY NAME</VendorId>
+    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+  </AddIn>
+  <AddIn Type="Application">
+    <Name>Application ShakeAreaBoundary</Name>
+    <Assembly>ShakeAreaBoundary.dll</Assembly>
+    <FullClassName>ShakeAreaBoundary.App</FullClassName>
+    <ClientId>13df332d-157c-4717-8ff1-3c97b0af5d0c</ClientId>
+    <VendorId>com.YOUR COMPANY NAME</VendorId>
+    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
+  </AddIn>
+</RevitAddIns>
