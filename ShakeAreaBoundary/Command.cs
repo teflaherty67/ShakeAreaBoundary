@@ -71,10 +71,10 @@ namespace ShakeAreaBoundary
                         Element lineToMove = colABLines.FirstOrDefault();
 
                         // get the location of the line
-                        LocationPoint curLocation = lineToMove.Location as LocationPoint;
+                        LocationCurve curLocation = lineToMove.Location as LocationCurve;
 
                         // create a vector to move the line
-                        XYZ curPoint = curLocation.Point as XYZ;
+                        XYZ curPoint = curLocation.Curve.GetEndPoint(0) as XYZ;
                         XYZ newVector = new XYZ(.25 + curPoint.X, curPoint.Y, curPoint.Z);
                         XYZ oldVector = new XYZ(newVector.X - .25, newVector.Y, newVector.Z);
 
