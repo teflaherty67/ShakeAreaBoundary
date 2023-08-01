@@ -39,19 +39,7 @@ namespace ShakeAreaBoundary
 
             areaViews.AddRange(areaFloor);
             areaViews.AddRange(areaFrame);
-            areaViews.AddRange(areaAttic);
-
-            // get all the area boundary lines in the project
-
-           
-
-            // set some variables
-
-            XYZ leftVector = new XYZ(.25,0,0);
-            XYZ rightVector = new XYZ(-.25, 0, 0);
-
-            Transform tfLeft = Transform.CreateTranslation(leftVector);
-            Transform tfRight = Transform.CreateTranslation(rightVector);
+            areaViews.AddRange(areaAttic);           
 
             // start the transaction
 
@@ -67,22 +55,27 @@ namespace ShakeAreaBoundary
                             .OfCategory(BuiltInCategory.OST_AreaSchemeLines)
                             .WhereElementIsNotElementType();
 
-                        // get the first line in the list
-                        Element lineToMove = colABLines.FirstOrDefault();
+                        if (colABLines.Count() > 0)
+                        {
+                            // get the first line in the list
+                            Element lineToMove = colABLines.FirstOrDefault();
 
-                        // get the location of the line
-                        LocationCurve curLocation = lineToMove.Location as LocationCurve;
+                            // get the location of the line
+                            LocationCurve curLocation = lineToMove.Location as LocationCurve;
 
-                        // create a vector to move the line
-                        XYZ curPoint = curLocation.Curve.GetEndPoint(0) as XYZ;
-                        XYZ newVector = new XYZ(.25 + curPoint.X, curPoint.Y, curPoint.Z);
-                        XYZ oldVector = new XYZ(newVector.X - .25, newVector.Y, newVector.Z);
+                            // create a vector to move the line
+                            XYZ curPoint = curLocation.Curve.GetEndPoint(0) as XYZ;
+                            XYZ newVector = new XYZ(.25 + curPoint.X, curPoint.Y, curPoint.Z);
+                            XYZ oldVector = new XYZ(newVector.X - .25, newVector.Y, newVector.Z);
 
-                        // move the line to the left
-                        lineToMove.Location.Move(newVector);
+                            // move the line to the left
+                            lineToMove.Location.Move(newVector);
 
-                        // move the line back to the right                
-                        lineToMove.Location.Move(oldVector);
+                            // move the line back to the right                
+                            lineToMove.Location.Move(oldVector);
+                        }
+                        else
+                            continue;
                     }
                 }
 
