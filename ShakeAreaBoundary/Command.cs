@@ -7,6 +7,7 @@ using Autodesk.Revit.UI.Selection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 
@@ -26,12 +27,22 @@ namespace ShakeAreaBoundary
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = uiapp.ActiveUIDocument;
             Application app = uiapp.Application;
-            Document doc = uidoc.Document;
+            Document curDoc = uidoc.Document;
+
+            // get all the area plans in the project
+            List<View> areaViews = new List<View>();
+
+            List<View> areaFloor = Utils.GetAllViewsByCategory(curDoc, "10:Floor Areas");
+            List<View> areaFrame = Utils.GetAllViewsByCategory(curDoc, "11:Frame Areas");
+            List<View> areaAttic = Utils.GetAllViewsByCategory(curDoc, "12:Attic Areas");
+
+            areaViews.AddRange(areaFloor);
+            areaViews.AddRange(areaFrame);
+            areaViews.AddRange(areaAttic);
 
             // get all the area boundary lines in the project
 
-            FilteredElementCollector colABLines = new FilteredElementCollector(doc);
-            colABLines.OfCategory(BuiltInCategory.OST_AreaSchemeLines);
+           
 
             // set some variables
 
@@ -43,24 +54,40 @@ namespace ShakeAreaBoundary
 
             // start the transaction
 
-            using (Transaction t = new Transaction(doc))
+            using (Transaction t = new Transaction(curDoc))
             {
                 t.Start("Shake Area Boundary Lines");
-
-                // move them to the left
-
-                foreach (Element curElem in colABLines)
                 {
-                    // move it to the left 3 inches
+                    // loop through each view in the list
+                    foreach (View curView in areaViews)
+                    {
+                        // make the view active view
+                        uidoc.ActiveView = curView;
+
+                        // get all area boundary lines in the active view
+                        FilteredElementCollector colABLines = new FilteredElementCollector(curDoc, curView.Id)
+                            .OfCategory(BuiltInCategory.OST_AreaSchemeLines);
+
+                        // get the first line in the list
+                        Element lineToMove = colABLines.FirstElement();
+
+                        // get the location of the line
+                        LocationPoint curLocation = lineToMove.Location as LocationPoint;
+
+                        // create a vector to move the line
+                        XYZ curPoint = curLocation.Point as XYZ;
+                        XYZ newVector = new XYZ(.25 + curPoint.X, curPoint.Y, curPoint.Z);
+                        XYZ oldVector = new XYZ(newVector.X - .25, newVector.Y, newVector.Z);
+
+                        // move the line to the left
+                        lineToMove.Location.Move(newVector);
+
+                        // move the line back to the right                
+                        lineToMove.Location.Move(oldVector);
+                    }
                 }
 
-                // move them back to the right
-
-                foreach (Element curElem in colABLines)
-                {
-                    // move it to the right 3 inches
-                }
-
+                t.Commit();
             }            
 
             return Result.Succeeded;
