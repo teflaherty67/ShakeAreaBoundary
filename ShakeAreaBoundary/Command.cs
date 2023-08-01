@@ -61,9 +61,6 @@ namespace ShakeAreaBoundary
                     // loop through each view in the list
                     foreach (View curView in areaViews)
                     {
-                        // make the view active view
-                        uidoc.ActiveView = curView;
-
                         // get all area boundary lines in the active view
                         FilteredElementCollector colABLines = new FilteredElementCollector(curDoc, curView.Id)
                             .OfCategory(BuiltInCategory.OST_AreaSchemeLines);
