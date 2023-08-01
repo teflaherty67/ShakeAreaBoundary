@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Windows.Controls;
 
 
 #endregion
@@ -62,11 +63,12 @@ namespace ShakeAreaBoundary
                     foreach (View curView in areaViews)
                     {
                         // get all area boundary lines in the active view
-                        FilteredElementCollector colABLines = new FilteredElementCollector(curDoc, curView.Id)
-                            .OfCategory(BuiltInCategory.OST_AreaSchemeLines);
+                        IEnumerable<Element> colABLines = new FilteredElementCollector(curDoc, curView.Id)
+                            .OfCategory(BuiltInCategory.OST_AreaSchemeLines)
+                            .WhereElementIsNotElementType();
 
                         // get the first line in the list
-                        Element lineToMove = colABLines.FirstElement();
+                        Element lineToMove = colABLines.FirstOrDefault();
 
                         // get the location of the line
                         LocationPoint curLocation = lineToMove.Location as LocationPoint;
